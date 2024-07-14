@@ -2,6 +2,7 @@ import express from 'express'
 import router from './routes/index.js';
 import cors from 'cors';
 import dotenv from 'dotenv'
+import authMiddleware from './middlewares/auth.js';
 
 dotenv.config();
 const app = express();
