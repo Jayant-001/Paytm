@@ -1,7 +1,6 @@
 import express from 'express'
 import { User } from '../db.js';
 import zod from 'zod';
-import { JWT_SECRET } from '../config.js'
 import jwt from 'jsonwebtoken';
 
 const router = express.Router();
@@ -15,6 +14,7 @@ const signupSchema = zod.object({
 
 router.post('/signup', async (req, res) => {
     const { firstName, lastName, userName, password } = req.body;
+    const JWT_SECRET = process.env.JWT_SECRET;
 
     try {
 
