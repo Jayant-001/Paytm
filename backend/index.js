@@ -2,9 +2,11 @@ import express from 'express'
 import router from './routes/index.js';
 import cors from 'cors';
 import dotenv from 'dotenv'
-import authMiddleware from './middlewares/auth.js';
+
+import { connectToDB } from './db.js';
 
 dotenv.config();
+connectToDB();
 const app = express();
 
 app.use(cors());

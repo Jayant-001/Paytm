@@ -7,7 +7,7 @@ const authMiddleware = (req, res, next) => {
 
     try {
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
-            return res.status(403).json(new Response(false, "Authorization token not found", null));
+            return res.status(401).json(new Response(false, "Authorization token not found", null));
         }
 
         const token = authHeader.split(' ')[1];
