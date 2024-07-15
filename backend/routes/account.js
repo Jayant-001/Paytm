@@ -85,6 +85,68 @@ router.post("/payment-request", async (req, res) => {
     } catch (error) {
         return res.status(500).json(error.message);
     }
+});
+
+function isValidStatus(status) {
+    if (status && (status == "pending" || status == 'fulfilled' || status == 'rejected')) return true;
+    return false;
+}
+
+router.get("/payment-requests", async (req, res) => {
+    try {
+        const { status } = req.query;
+        let paymentRequests;
+        if (isValidStatus(status)) {
+            paymentRequests = await PaymentRequest.find({ toId: req.userId, status });
+        }
+        else {
+            paymentRequests = await PaymentRequest.find({ toId: req.userId });
+        }
+        return res.json(paymentRequests);
+    } catch (error) {
+        return res.status(500).json(error.message);
+    }
+})
+
+router.post('/fulfill-payment', async (req, res) => {
+    const { requestId } = req.body;
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+
+        // Fetch the accounts within the transaction
+        const paymentRequest = await PaymentRequest.findById(requestId).session(session);
+        if (!paymentRequest || paymentRequest.toId.toString() != req.userId || paymentRequest.status !== "pending") {
+            throw new Error('Invalid payment request');
+        }
+
+        const fromAccount = await Account.findOne({ userId: paymentRequest.fromId }).session(session);
+        const toAccount = await Account.findOne({ userId: paymentRequest.toId }).session(session);
+
+        if (fromAccount.balance < paymentRequest.amount) {
+            throw new Error("Insufficient balance.")
+        }
+
+        fromAccount.balance -= paymentRequest.amount;
+        toAccount.balance += paymentRequest.amount;
+
+        await fromAccount.save({ session });
+        await toAccount.save({ session });
+
+        await History.create([{ fromId: paymentRequest.fromId, toId: paymentRequest.toId, amount: paymentRequest.amount }], { session });
+
+        paymentRequest.status = "fulfilled";
+        await paymentRequest.save({ session })
+
+        await session.commitTransaction();
+        session.endSession();
+
+        res.status(200).json(paymentRequest);
+    } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+        return res.status(500).json(error.message);
+    }
 })
 
 export default router;
