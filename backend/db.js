@@ -47,5 +47,23 @@ const accountSchema = new Schema({
     }
 });
 
+const historySchema = new Schema({
+    fromId: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: true
+    },
+    toId: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: true
+    },
+    amount: {
+        type: Number,
+        required: true
+    }
+}, { timestamps: true })
+
 export const User = model("User", userSchema);
 export const Account = model("Account", accountSchema);
+export const History = model("History", historySchema);
