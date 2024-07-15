@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { Account, History } from "../db.js"
+import { Account, History, PaymentRequest } from "../db.js"
 import mongoose from "mongoose";
 
 const router = Router();
@@ -57,6 +57,31 @@ router.get('/history', async (req, res) => {
         })
 
         return res.json(histories);
+    } catch (error) {
+        return res.status(500).json(error.message);
+    }
+})
+
+router.put('/add', async (req, res) => {
+    try {
+        if (req.body.amount < 0) return res.status(402).json({ message: "Amount can't be negative." })
+
+        // Update amount
+        await Account.updateOne({ userId: req.userId }, { $inc: { balance: req.body.amount } })
+
+        return res.json({ message: "Amount added to your account." })
+    } catch (error) {
+        return res.status(500).json(error.message);
+    }
+})
+
+router.post("/payment-request", async (req, res) => {
+    try {
+        const { to, amount } = req.body;
+
+        await PaymentRequest.create({ fromId: req.userId, toId: to, amount });
+
+        return res.json({ message: "Payment request created." })
     } catch (error) {
         return res.status(500).json(error.message);
     }

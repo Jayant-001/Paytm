@@ -64,6 +64,29 @@ const historySchema = new Schema({
     }
 }, { timestamps: true })
 
+const paymentRequestSchema = new Schema({
+    fromId: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: true
+    },
+    toId: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: true
+    },
+    amount: {
+        type: Number,
+        required: true
+    },
+    status: {
+        type: String,
+        enum: ['pending', 'fulfilled', 'rejected'],
+        default: 'pending'
+    }
+}, { timestamps: true });
+
 export const User = model("User", userSchema);
 export const Account = model("Account", accountSchema);
 export const History = model("History", historySchema);
+export const PaymentRequest = model("PaymentRequest", paymentRequestSchema);
