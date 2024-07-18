@@ -33,7 +33,7 @@ router.post('/signup', async (req, res) => {
 
         const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1d' });
 
-        res.status(201).json({ error: true, errorMessage: "", data: token })
+        res.status(201).json({ token })
     } catch (error) {
         console.log(error);
         res.status(500).json(error.message);
@@ -46,7 +46,7 @@ const loginSchema = zod.object({
     password: zod.string().min(3, { message: "Password should atleast 3 char long" })
 })
 
-router.get('/login', async (req, res) => {
+router.post('/signin', async (req, res) => {
     const { userName, password } = req.body;
     const JWT_SECRET = process.env.JWT_SECRET;
     try {
@@ -61,7 +61,7 @@ router.get('/login', async (req, res) => {
 
         const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1d' });
 
-        res.status(201).json({ error: true, errorMessage: "", data: token })
+        res.status(201).json({ token })
 
     } catch (error) {
         console.log(error);

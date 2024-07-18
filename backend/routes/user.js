@@ -11,6 +11,7 @@ const updateSchema = zod.object({
     passwordName: zod.string().optional()
 })
 
+// update user data
 router.put('/', async (req, res) => {
 
     try {
@@ -30,6 +31,7 @@ router.put('/', async (req, res) => {
     }
 });
 
+// Get user by Id
 router.get('/getById/:userId', async (req, res) => {
     try {
         const { userId } = req.params;
@@ -43,6 +45,7 @@ router.get('/getById/:userId', async (req, res) => {
     }
 })
 
+// Get all users based on filter
 router.get("/", async (req, res) => {
     try {
         const filter = req.query.filter || "";
@@ -66,6 +69,7 @@ router.get("/", async (req, res) => {
     }
 })
 
+// Return current user's data
 router.get('/me', async (req, res) => {
     try {
         const user = await User.findOne({_id: req.userId})
