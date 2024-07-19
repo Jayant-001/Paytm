@@ -62,7 +62,8 @@ router.get("/", async (req, res) => {
                 }
             }]
         });
-        return res.status(200).json(new Response(true, null, users));
+        // return res.status(200).json(new Response(true, null, users));
+        return res.json(users);
     } catch (error) {
         console.log(error);
         return res.status(500).json(new Response(true, error.message, null))

@@ -5,19 +5,19 @@ import Heading from "../components/Heading";
 import InputBox from "../components/InputBox";
 import SubHeading from "../components/SubHeading";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const Signin = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const navigate = useNavigate();
+    const navigate = useNavigate()
 
     const handleClick = async (e) => {
         e.preventDefault();
         try {
             const { data } = await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/v1/auth/signin`, { userName: email, password })
             localStorage.setItem("token", data.token);
-            navigate("/")
+            navigate("/", { replace: true })
         } catch (error) {
             console.log(error);
         }

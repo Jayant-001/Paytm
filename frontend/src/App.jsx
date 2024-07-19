@@ -7,7 +7,6 @@ import { authState, userState } from "./state/authState";
 function App() {
 
     const auth = useRecoilValue(authState)
-    
 
     if (auth.isLoading) {
         return <h1>Loading......</h1>

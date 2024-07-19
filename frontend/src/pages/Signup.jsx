@@ -5,6 +5,7 @@ import SubHeading from "../components/SubHeading";
 import Button from "../components/Button";
 import { BottomWarning } from "../components/BottomWarning";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function Signup() {
     const [firstName, setFirstName] = useState("");
@@ -12,6 +13,7 @@ function Signup() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
+    const navigate = useNavigate();
     const URL = import.meta.env.VITE_SERVER_URL;
 
     const handleClick = async (e) => {
@@ -19,6 +21,7 @@ function Signup() {
         try {
             const { data } = await axios.post(`${URL}/api/v1/auth/signup`, { userName: email, firstName, lastName, password })
             localStorage.setItem("token", data.token);
+            navigate("/")
         } catch (error) {
             console.log(error);
         }

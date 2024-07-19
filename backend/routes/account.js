@@ -47,14 +47,15 @@ router.post('/transfer', async (req, res) => {
 
 router.get('/history', async (req, res) => {
     try {
-
-        // Fetch all transactions => Send | Receive
         const histories = await History.find({
             $or: [
-                { toId: req.userId },
-                { fromId: req.userId }
+                { fromId: req.userId },
+                { toId: req.userId }
             ]
         })
+            .populate('fromId', 'userName firstName lastName') // populate fromId with user details
+            .populate('toId', 'userName firstName lastName') // populate toId with user details
+            .exec();
 
         return res.json(histories);
     } catch (error) {
