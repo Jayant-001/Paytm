@@ -53,13 +53,16 @@ const ProfilePage = () => {
     const user = useRecoilValue(userState);
     const [userBalance, setUserBalance] = useState(0)
     const [transactions, setTransactions] = useState([])
+    const [paymentRequests, setPaymentRequests] = useState([])
 
     const userData = useRecoilValue(userState)
 
+    console.log("MY id", user._id)
 
     useEffect(() => {
         fetchBalance();
         fetchTransactionHistory();
+        fetchPaymentRequests();
     }, [])
 
     const fetchBalance = async () => {
@@ -82,21 +85,21 @@ const ProfilePage = () => {
                     'Authorization': 'Bearer ' + TOKEN
                 }
             });
-            console.log(data);
             setTransactions(data);
         } catch (error) {
             console.log(error);
         }
     }
 
-    const handleAddMoney = async (e) => {
-        e.preventDefault();
+    const fetchPaymentRequests = async () => {
         try {
-            const { data } = await axios.put(`${API_URL}/api/v1/account/add`, { amount }, {
+            const { data } = await axios.get(`${API_URL}/api/v1/account/payment-request`, {
                 headers: {
                     'Authorization': 'Bearer ' + TOKEN
                 }
             });
+            console.log(data);
+            setPaymentRequests(data);
         } catch (error) {
             console.log(error);
         }
@@ -216,7 +219,7 @@ const ProfilePage = () => {
                                         {transaction.toId._id == user._id ? "Receive" : "Send"}
                                     </td>
                                     <td className="py-2 px-4 border-b">
-                                        {dateFormat(transaction.updatedAt, "mmmm dS, yy, h:MM:ss TT")}
+                                        {dateFormat(transaction.updatedAt, "mmmm dS, yy, h:MM TT")}
                                     </td>
                                     <td className="py-2 px-4 border-b">
                                         Success
@@ -254,21 +257,22 @@ const ProfilePage = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {user.requests.map((request) => (
+                            {paymentRequests.map((request) => (
+
                                 <tr
-                                    key={request.id}
+                                    key={request._id}
                                     className="hover:bg-gray-100"
                                 >
                                     <td className="py-2 px-4 border-b">
-                                        {request.name}
+                                        {request.fromId.firstName}
                                     </td>
                                     <td className="py-2 px-4 border-b">
                                         {request.amount}
                                     </td>
                                     <td className="py-2 px-4 border-b">
-                                        {request.date}
+                                        {dateFormat(request.updatedAt, "mmmm dS, yy, h:MM TT")}
                                     </td>
-                                    <td className="py-2 px-4 border-b">
+                                    <td className="capitalize py-2 px-4 border-b">
                                         {request.status}
                                     </td>
                                 </tr>

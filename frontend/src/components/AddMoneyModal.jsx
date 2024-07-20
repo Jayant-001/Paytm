@@ -3,11 +3,13 @@ import React, { useRef, useState } from 'react'
 import { IoMdClose, IoMdAdd } from "react-icons/io";
 import { API_URL, TOKEN } from '../config';
 import toast from 'react-hot-toast'
+import { useNavigate } from 'react-router-dom';
 
 
 const AddMoneyModal = ({ onClose }) => {
     const [amount, setAmount] = useState(0);
     const modalRef = useRef();
+    const navigate = useNavigate();
 
     const closeModal = (e) => {
         if (modalRef.current === e.target) {
@@ -31,7 +33,6 @@ const AddMoneyModal = ({ onClose }) => {
         } catch (error) {
             toast.error(error.response.statusText)
         }
-
     }
 
     return (
@@ -46,7 +47,7 @@ const AddMoneyModal = ({ onClose }) => {
                             placeholder='Enter amount'
                             className='w-full px-4 py-3 text-black border-gray-300 rounded-md'
                             required onChange={(e) => setAmount(e.target.value)} />
-                        <button onClick={handleAddButtonClick} className='mt-4 w-full flex items-center justify-center gap-2 px-5 py-2 font-medium rounded-md bg-black'><IoMdAdd size={30} /> Add money</button>
+                        <button onClick={handleAddButtonClick} className='mt-4 w-full flex items-center justify-center gap-2 px-5 py-2 font-medium rounded-md bg-green-500'><IoMdAdd size={30} /> Add money</button>
                     </form>
                 </div>
             </div>
