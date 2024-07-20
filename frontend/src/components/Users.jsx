@@ -3,6 +3,8 @@ import Button from "./Button";
 import axios from "axios";
 import { API_URL, TOKEN } from "../config.js"
 import { useNavigate } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import { userState } from "../state/authState.js";
 
 const Users = () => {
     const [users, setUsers] = useState([]);
@@ -40,6 +42,9 @@ const Users = () => {
 function User({ user }) {
 
     const navigate = useNavigate();
+    const me = useRecoilValue(userState);
+
+    if(me._id == user._id) return <></>
 
     return (
         <div className="flex justify-between">
