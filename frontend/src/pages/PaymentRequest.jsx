@@ -7,8 +7,6 @@ import { RxCross2 } from "react-icons/rx";
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
-
-
 const PaymentRequest = () => {
 
     const [paymentRequests, setPaymentRequests] = useState([])
@@ -32,7 +30,6 @@ const PaymentRequest = () => {
     }
 
     const handleAccept = async (requestId) => {
-
         try {
             const { data } = await axios.post(`${API_URL}/api/v1/account/payment-request-fulfill`, { requestId }, {
                 headers: {
@@ -47,7 +44,6 @@ const PaymentRequest = () => {
     }
 
     const handleReject = async (requestId) => {
-
         try {
             const { data } = await axios.post(`${API_URL}/api/v1/account/payment-request-reject`, { requestId }, {
                 headers: {
@@ -60,7 +56,6 @@ const PaymentRequest = () => {
             console.log(error);
         }
     }
-
 
     return (
         <div className="container mx-auto p-4">
@@ -110,4 +105,4 @@ const PaymentRequest = () => {
     )
 }
 
-export default PaymentRequest
+export default PaymentRequest;

@@ -9,47 +9,7 @@ import dateFormat from 'dateformat'
 import AddMoneyModal from "../components/AddMoneyModal";
 
 const ProfilePage = () => {
-    // const user = {
-    //     name: "John Doe",
-    //     email: "john.doe@example.com",
-    //     phone: "+1234567890",
-    //     balance: "1000",
-    //     transactions: [
-    //         {
-    //             id: 1,
-    //             name: "Transaction 1",
-    //             amount: "$200",
-    //             type: "Send",
-    //             date: "2024-01-01",
-    //             status: "Success",
-    //         },
-    //         {
-    //             id: 2,
-    //             name: "Transaction 2",
-    //             amount: "$300",
-    //             type: "Receive",
-    //             date: "2024-01-02",
-    //             status: "Failed",
-    //         },
-    //     ],
-    //     requests: [
-    //         {
-    //             id: 1,
-    //             name: "Request 1",
-    //             amount: "$50",
-    //             date: "2024-01-01",
-    //             status: "Pending",
-    //         },
-    //         {
-    //             id: 2,
-    //             name: "Request 2",
-    //             amount: "$100",
-    //             date: "2024-01-02",
-    //             status: "Completed",
-    //         },
-    //     ],
-    // };
-
+ 
     const user = useRecoilValue(userState);
     const [transactions, setTransactions] = useState([])
     const [paymentRequests, setPaymentRequests] = useState([])

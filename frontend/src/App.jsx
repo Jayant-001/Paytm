@@ -2,7 +2,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import "./App.css";
 import NavBar from "./components/UI/Navbar";
 import { useRecoilValue } from "recoil";
-import { authState, userState } from "./state/authState";
+import { authState } from "./state/authState";
 
 function App() {
 

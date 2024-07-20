@@ -5,42 +5,6 @@ import { useRecoilValue } from "recoil";
 import { userState } from "../state/authState";
 import dateFormat from "dateformat";
 
-const transactions = [
-    {
-        _id: 2,
-        name: "Alice",
-        amount: 50,
-        type: "send",
-        date: "2023-07-01",
-        status: "success",
-    },
-    {
-        _id: 3,
-        name: "Bob",
-        amount: 20,
-        type: "receive",
-        date: "2023-07-02",
-        status: "failed",
-    },
-    {
-        _id: 4,
-        name: "Charlie",
-        amount: 30,
-        type: "send",
-        date: "2023-07-03",
-        status: "success",
-    },
-    {
-        _id: 5,
-        name: "David",
-        amount: 25,
-        type: "receive",
-        date: "2023-07-04",
-        status: "success",
-    },
-    // Add more transactions as needed
-];
-
 const TransactionHistory = () => {
     const [transactions, setTransactions] = useState([])
     const user = useRecoilValue(userState);

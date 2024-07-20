@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import axios from "axios";
 import { authState, userState } from "../state/authState";
 import { useSetRecoilState } from "recoil";
+import { API_URL, TOKEN } from "../config";
 
 const AuthProvider = ({ children }) => {
 
@@ -11,11 +12,10 @@ const AuthProvider = ({ children }) => {
     useEffect(() => {
         const check = async () => {
             try {
-                const token = localStorage.getItem("token");
-                if (token) {
-                    const { data } = await axios.get("http://localhost:4000/api/v1/user/me", {
+                if (TOKEN) {
+                    const { data } = await axios.get(`${API_URL}/api/v1/user/me`, {
                         headers: {
-                            'Authorization': 'Bearer ' + token
+                            'Authorization': 'Bearer ' + TOKEN
                         }
                     })
                     setUser(data);
