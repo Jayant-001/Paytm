@@ -62,10 +62,12 @@ router.get("/history", async (req, res) => {
         })
             .populate("fromId", "userName firstName lastName") // populate fromId with user details
             .populate("toId", "userName firstName lastName") // populate toId with user details
+            .sort({ updatedAt: -1 }) // sort by updatedAt in decreasing order
             .exec();
 
         return res.json(histories);
     } catch (error) {
+        console.log(error.message);
         return res.status(500).json(error.message);
     }
 });
@@ -85,6 +87,7 @@ router.put("/add", async (req, res) => {
 
         return res.json({ message: "Amount added to your account." });
     } catch (error) {
+        console.log(error.message);
         return res.status(500).json(error.message);
     }
 });
@@ -98,6 +101,7 @@ router.post("/payment-request", async (req, res) => {
 
         return res.json({ message: "Payment request created." });
     } catch (error) {
+        console.log(error.message);
         return res.status(500).json(error.message);
     }
 });
@@ -121,19 +125,22 @@ router.get("/payment-request", async (req, res) => {
                 status,
             })
                 .populate("fromId", "userName firstName lastName") // populate fromId with user details
+                .sort({ updatedAt: -1 }) // sort by updatedAt in increasing order
                 .exec();
         } else {
             paymentRequests = await PaymentRequest.find({ toId: req.userId })
                 .populate("fromId", "userName firstName lastName") // populate fromId with user details
+                .sort({ updatedAt: -1 }) // sort by updatedAt in increasing order
                 .exec();
         }
         return res.json(paymentRequests);
     } catch (error) {
+        console.log(error.message);
         return res.status(500).json(error.message);
     }
 });
 
-router.post("/fulfill-payment", async (req, res) => {
+router.post("/payment-request-fulfill", async (req, res) => {
     const { requestId } = req.body;
     const session = await mongoose.startSession();
     session.startTransaction();
@@ -142,6 +149,7 @@ router.post("/fulfill-payment", async (req, res) => {
         const paymentRequest = await PaymentRequest.findById(requestId).session(
             session
         );
+
         if (
             !paymentRequest ||
             paymentRequest.toId.toString() != req.userId ||
@@ -153,16 +161,17 @@ router.post("/fulfill-payment", async (req, res) => {
         const fromAccount = await Account.findOne({
             userId: paymentRequest.fromId,
         }).session(session);
+
         const toAccount = await Account.findOne({
             userId: paymentRequest.toId,
         }).session(session);
 
-        if (fromAccount.balance < paymentRequest.amount) {
+        if (toAccount.balance < paymentRequest.amount) {
             throw new Error("Insufficient balance.");
         }
 
-        fromAccount.balance -= paymentRequest.amount;
-        toAccount.balance += paymentRequest.amount;
+        fromAccount.balance += paymentRequest.amount;
+        toAccount.balance -= paymentRequest.amount;
 
         await fromAccount.save({ session });
         await toAccount.save({ session });
@@ -170,8 +179,8 @@ router.post("/fulfill-payment", async (req, res) => {
         await History.create(
             [
                 {
-                    fromId: paymentRequest.fromId,
-                    toId: paymentRequest.toId,
+                    fromId: paymentRequest.toId,
+                    toId: paymentRequest.fromId,
                     amount: paymentRequest.amount,
                 },
             ],
@@ -184,12 +193,42 @@ router.post("/fulfill-payment", async (req, res) => {
         await session.commitTransaction();
         session.endSession();
 
-        res.status(200).json(paymentRequest);
+        res.status(200).json({message: "Payment accepted"});
     } catch (error) {
         await session.abortTransaction();
         session.endSession();
+        console.log(error.message);
         return res.status(500).json(error.message);
     }
 });
+
+router.post("/payment-request-reject", async (req, res) => {
+
+    try {
+        const session = await mongoose.startSession();
+        session.startTransaction();
+        const { requestId } = req.body;
+        const paymentRequest = await PaymentRequest.findById(requestId).session(session);
+
+        if (
+            !paymentRequest ||
+            paymentRequest.toId.toString() != req.userId ||
+            paymentRequest.status !== "pending"
+        ) {
+            throw new Error("Invalid payment request");
+        }
+
+        paymentRequest.status = "rejected";
+        await paymentRequest.save({session});
+
+        await session.commitTransaction();
+        session.endSession();
+
+        res.status(200).json({ message: "Payment rejected" });
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json(error.message)
+    }
+})
 
 export default router;

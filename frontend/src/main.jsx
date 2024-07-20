@@ -13,6 +13,8 @@ import Landing from "./components/Landing.jsx";
 import { RecoilRoot } from "recoil";
 import AuthProvider from "./common/AuthProvider.jsx";
 import { Toaster } from 'react-hot-toast';
+import Request from "./pages/Request.jsx";
+import PaymentRequest from "./pages/PaymentRequest.jsx";
 
 const router = createBrowserRouter([
     {
@@ -30,6 +32,14 @@ const router = createBrowserRouter([
             {
                 path: "/send",
                 element: <Send />,
+            },
+            {
+                path: "/request",
+                element: <Request />
+            },
+            {
+                path: "payment-requests",
+                element: <PaymentRequest />
             },
             {
                 path: "/transactions",

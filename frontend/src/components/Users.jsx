@@ -5,24 +5,7 @@ import { API_URL, TOKEN } from "../config.js"
 import { useNavigate } from "react-router-dom";
 
 const Users = () => {
-    // Replace with backend call
-    const [users, setUsers] = useState([
-        {
-            firstName: "Jayant",
-            lastName: "Gupta",
-            _id: 1,
-        },
-        {
-            firstName: "Jayant",
-            lastName: "Gupta",
-            _id: 1,
-        },
-        {
-            firstName: "Jayant",
-            lastName: "Gupta",
-            _id: 1,
-        },
-    ]);
+    const [users, setUsers] = useState([]);
 
     useEffect(() => {
         (async () => {
@@ -32,7 +15,6 @@ const Users = () => {
                 }
             })
             setUsers(data);
-            console.log(data);
         })()
     }, [])
 
@@ -58,24 +40,6 @@ const Users = () => {
 function User({ user }) {
 
     const navigate = useNavigate();
-    const handleSend = async (e) => {
-        e.preventDefault();
-        navigate(`/send?id=${user._id}&name=${user.firstName}`)
-    }
-
-    const handleRequest = async (e) => {
-        e.preventDefault();
-        try {
-            const { data } = await axios.get(`${API_URL}/api/v1/user`, {
-                headers: {
-                    'Authorization': 'Bearer ' + TOKEN
-                }
-            })
-
-        } catch (error) {
-            console.log(error);
-        }
-    }
 
     return (
         <div className="flex justify-between">
@@ -93,10 +57,10 @@ function User({ user }) {
             </div>
             <div className="flex gap-2 justify-center items-center">
                 <div className="flex flex-col justify-center h-ful">
-                    <Button label={"Request"} onClick={handleRequest} />
+                    <Button label={"Request"} onClick={() => navigate(`/request?id=${user._id}&name=${user.firstName}`)} />
                 </div>
                 <div className="flex flex-col justify-center h-ful">
-                    <Button label={"Send"} onClick={handleSend} />
+                    <Button label={"Send"} onClick={() => navigate(`/send?id=${user._id}&name=${user.firstName}`)} />
                 </div>
             </div>
         </div>

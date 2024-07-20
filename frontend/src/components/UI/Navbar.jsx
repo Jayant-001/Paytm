@@ -17,10 +17,10 @@ const NavBar = () => {
                         Dashboard
                     </Link>
                     <Link
-                        to="money-requests"
+                        to="payment-requests"
                         className="text-white hover:text-gray-300"
                     >
-                        Money Requests
+                        Payment Requests
                     </Link>
                     <Link
                         to="transactions"

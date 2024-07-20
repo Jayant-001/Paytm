@@ -1,6 +1,6 @@
 import express from 'express';
 import zod from 'zod'
-import { User } from '../db.js';
+import { Account, User } from '../db.js';
 import Response from '../DTOs/response.js'
 
 const router = express.Router();
@@ -74,7 +74,8 @@ router.get("/", async (req, res) => {
 router.get('/me', async (req, res) => {
     try {
         const user = await User.findOne({_id: req.userId})
-        return res.status(200).json(user);
+        const account = await Account.findOne({ userId: req.userId });
+        return res.status(200).json({_id: user._id, firstName: user.firstName, lastName: user.lastName, userName: user.userName, balance: account.balance});
     } catch (error) {
         return res.status(500).json(new Response(true, error.message, null))
     }

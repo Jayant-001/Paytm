@@ -51,32 +51,15 @@ const ProfilePage = () => {
     // };
 
     const user = useRecoilValue(userState);
-    const [userBalance, setUserBalance] = useState(0)
     const [transactions, setTransactions] = useState([])
     const [paymentRequests, setPaymentRequests] = useState([])
 
     const userData = useRecoilValue(userState)
 
-    console.log("MY id", user._id)
-
     useEffect(() => {
-        fetchBalance();
         fetchTransactionHistory();
         fetchPaymentRequests();
     }, [])
-
-    const fetchBalance = async () => {
-        try {
-            const { data } = await axios.get(`${API_URL}/api/v1/account/balance`, {
-                headers: {
-                    'Authorization': 'Bearer ' + TOKEN
-                }
-            });
-            setUserBalance(data.balance.toFixed(2));
-        } catch (error) {
-            console.log(error);
-        }
-    }
 
     const fetchTransactionHistory = async () => {
         try {
@@ -98,7 +81,6 @@ const ProfilePage = () => {
                     'Authorization': 'Bearer ' + TOKEN
                 }
             });
-            console.log(data);
             setPaymentRequests(data);
         } catch (error) {
             console.log(error);
@@ -152,7 +134,7 @@ const ProfilePage = () => {
                     Balance{" "}
                     <span className="text-4xl font-bold text-green-500">
                         {" "}
-                        &#8377;{userBalance}{" "}
+                        &#8377;{user.balance.toFixed(2)}{" "}
                     </span>
                 </h2>
                 <button onClick={() => setShowAddModal(true)} className="flex items-center h-fit bg-green-500 text-white gap-1 px-4 py-2 cursor-pointer font-semibold tracking-widest rounded-md hover:bg-blue-400 duration-300 hover:gap-2 hover:translate-x-3">
