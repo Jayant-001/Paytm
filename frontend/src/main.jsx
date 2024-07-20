@@ -12,6 +12,7 @@ import Profile from "./pages/Profile.jsx";
 import Landing from "./components/Landing.jsx";
 import { RecoilRoot } from "recoil";
 import AuthProvider from "./common/AuthProvider.jsx";
+import { Toaster } from 'react-hot-toast';
 
 const router = createBrowserRouter([
     {
@@ -54,6 +55,10 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>
         <RecoilRoot>
             <AuthProvider>
+                <Toaster
+                    position="top-center"
+                    reverseOrder={false}
+                />
                 <RouterProvider router={router} />
             </AuthProvider>
         </RecoilRoot>

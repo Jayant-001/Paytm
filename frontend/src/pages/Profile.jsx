@@ -6,6 +6,7 @@ import { userState } from "../state/authState";
 import axios from "axios";
 import { API_URL, TOKEN } from "../config";
 import dateFormat from 'dateformat'
+import AddMoneyModal from "../components/AddMoneyModal";
 
 const ProfilePage = () => {
     // const user = {
@@ -48,13 +49,13 @@ const ProfilePage = () => {
     //         },
     //     ],
     // };
-    
+
     const user = useRecoilValue(userState);
     const [userBalance, setUserBalance] = useState(0)
     const [transactions, setTransactions] = useState([])
 
     const userData = useRecoilValue(userState)
-   
+
 
     useEffect(() => {
         fetchBalance();
@@ -91,7 +92,7 @@ const ProfilePage = () => {
     const handleAddMoney = async (e) => {
         e.preventDefault();
         try {
-            const { data } = await axios.put(`${API_URL}/api/v1/account/add`, {amount},  {
+            const { data } = await axios.put(`${API_URL}/api/v1/account/add`, { amount }, {
                 headers: {
                     'Authorization': 'Bearer ' + TOKEN
                 }
@@ -105,6 +106,7 @@ const ProfilePage = () => {
 
     const [showTransactions, setShowTransactions] = useState(false);
     const [showRequests, setShowRequests] = useState(false);
+    const [showAddModal, setShowAddModal] = useState(false);
 
     const toggleTransactions = () => setShowTransactions(!showTransactions);
     const toggleRequests = () => setShowRequests(!showRequests);
@@ -115,10 +117,9 @@ const ProfilePage = () => {
         navigate("/signin")
     }
 
-    console.log(user);
-
     return (
         <div className="container mx-auto p-4">
+
             <div className="bg-white shadow-md rounded-lg p-6 mb-6">
                 <h2 className="text-3xl font-bold mb-4 text-gray-700">
                     Profile
@@ -151,7 +152,7 @@ const ProfilePage = () => {
                         &#8377;{userBalance}{" "}
                     </span>
                 </h2>
-                <button className="flex items-center h-fit bg-green-500 text-white gap-1 px-4 py-2 cursor-pointer font-semibold tracking-widest rounded-md hover:bg-blue-400 duration-300 hover:gap-2 hover:translate-x-3">
+                <button onClick={() => setShowAddModal(true)} className="flex items-center h-fit bg-green-500 text-white gap-1 px-4 py-2 cursor-pointer font-semibold tracking-widest rounded-md hover:bg-blue-400 duration-300 hover:gap-2 hover:translate-x-3">
                     Add money
                     <svg
                         className="w-5 h-5"
@@ -168,6 +169,7 @@ const ProfilePage = () => {
                         ></path>
                     </svg>
                 </button>
+                {showAddModal && < AddMoneyModal onClose={() => setShowAddModal(false)} />}
             </div>
 
             <div className="bg-white shadow-md rounded-lg p-6 mb-6">
